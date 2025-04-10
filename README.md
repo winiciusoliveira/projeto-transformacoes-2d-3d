@@ -5,23 +5,19 @@ Projeto visual e interativo que demonstra as principais transformações geomét
 ✅ Translação  
 ✅ Rotação  
 ✅ Escala  
-✅ Cisalhamento  
+✅ Cisalhamento
 
-Utilizando HTML, CSS e JavaScript (Three.js e Canvas), o usuário pode manipular objetos por meio de sliders e visualizar as transformações aplicadas em tempo real.
+Utilizando HTML, CSS e JavaScript (Three.js e Canvas), o usuário pode manipular objetos por meio de sliders e visualizar
+as transformações aplicadas em tempo real.
 
 ## 💻 Tecnologias
+
 - HTML5
 - CSS3 (com Google Fonts)
 - JavaScript
 - Three.js (para 3D)
 - WebGL e Canvas
 
-## 🔗 Acesse a versão publicada
-* (link do GitHub Pages ou Netlify)
+## 🔗 Acesse a versão publicada (Em Desenvolvimento)
 
-## 📁 Estrutura
-- `index.html` - Tela principal
-- `2d.html` - Transformações em 2D
-- `3d.html` - Transformações em 3D
-- `style.css` - Estilos
-- `js/transform3d.js` - Código de lógica 3D
+## 📁 Estrutura (Em Desenvolvimento)
