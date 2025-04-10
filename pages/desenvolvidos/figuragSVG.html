@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Transformações Geométricas Interativas</title>
+  <link rel="stylesheet" href="../../style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    /* Estilos básicos para layout da página */
+    body {
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    svg {
+      border: 1px solid #ccc;
+      margin: 20px 0;
+    }
+    .controls {
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+      gap: 10px;
+    }
+    label {
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <h1>Transformações Geométricas Interativas</h1>
+
+  <nav>
+    <a href="../../index.html" class="button">Início</a>
+  </nav>
+
+  <!--
+    O que é SVG?
+    - SVG significa Scalable Vector Graphics (Gráficos Vetoriais Escaláveis).
+    - É um formato de imagem baseado em XML, usado para desenhar gráficos 2D diretamente em páginas web. 
+    Ao contrário de imagens rasterizadas (como JPG ou PNG), 
+    os gráficos SVG não perdem qualidade quando são redimensionados, 
+    porque são definidos por equações e coordenadas, e não por pixels.
+  -->
+  <!-- SVG onde a figura será exibida -->
+  <!-- O viewBox do SVG é definido como -200 -200 400 400, centralizando a origem (0, 0) no meio da tela. Isso facilita transformações simétricas, como rotação em torno do centro. -->
+  <!-- O sistema de coordenadas vai de -200 a +200 nos dois eixos, com a origem (0,0) no centro do SVG -->
+  <svg id="svg" width="400" height="400" viewBox="-200 -200 400 400">
+    <!-- A figura manipulada é um triângulo definido pela tag <polygon>. Seus pontos são: (0,-50), (50,50) e (-50,50). 
+    É através dele que todas as transformações visuais são aplicadas. 
+    O <polygon> desenha o triângulo com base nas coordenadas dos três vértices.
+    Um triângulo simples representado por um <polygon> -->
+    <polygon id="triangle" points="0,-50 50,50 -50,50" fill="skyblue" stroke="black"/>
+  </svg>
+
+  <!-- Cada transformação é controlada por input range (sliders). O JavaScript monitora esses inputs e atualiza uma matriz de transformação que é aplicada dinamicamente ao triângulo. -->
+  <!-- Controles para manipular os parâmetros de transformação -->
+  <div class="controls">
+    <label>Rotação (°): <input type="range" id="rotate" min="0" max="360" value="0"></label>
+    <label>Escala (x): <input type="range" id="scaleX" min="0.1" max="2" step="0.1" value="1"></label>
+    <label>Escala (y): <input type="range" id="scaleY" min="0.1" max="2" step="0.1" value="1"></label>
+    <label>Translação X: <input type="range" id="translateX" min="-100" max="100" value="0"></label>
+    <label>Translação Y: <input type="range" id="translateY" min="-100" max="100" value="0"></label>
+    <label>Cisalhamento X: <input type="range" id="shearX" min="-2" max="2" step="0.1" value="0"></label>
+    <label>Cisalhamento Y: <input type="range" id="shearY" min="-2" max="2" step="0.1" value="0"></label>
+  </div>
+
+  <script>
+    const triangle = document.getElementById('triangle');
+
+    // Referência a cada controle deslizante
+    const controls = {
+      rotate: document.getElementById('rotate'),
+      scaleX: document.getElementById('scaleX'),
+      scaleY: document.getElementById('scaleY'),
+      translateX: document.getElementById('translateX'),
+      translateY: document.getElementById('translateY'),
+      shearX: document.getElementById('shearX'),
+      shearY: document.getElementById('shearY'),
+    };
+
+    // Função para atualizar a transformação no triângulo
+    function updateTransform() {
+
+      // Converte o ângulo de rotação de graus para radianos
+      // A rotação gira a figura ao redor da origem (0, 0) por um determinado ângulo.
+      // A rotação é feita em torno da origem e depende de cos(θ) e sin(θ), onde θ é o ângulo em radianos.
+      /*
+      Matriz de rotação: 
+      [ cos(θ) -sin(θ) ]  
+      [ sin(θ)  cos(θ) ]
+      */
+
+      const angle = parseFloat(controls.rotate.value) * Math.PI / 180;
+      const cos = Math.cos(angle); // cos(θ)
+      const sin = Math.sin(angle); // sin(θ)
+
+      // Escala nos eixos X e Y
+      // A escala muda o tamanho da figura nos eixos X e Y separadamente. Pode alongar ou achatar o triângulo, dependendo dos valores escolhidos.
+      const sx = parseFloat(controls.scaleX.value); // fator de escala no eixo X
+      const sy = parseFloat(controls.scaleY.value); // fator de escala no eixo Y
+
+      // Translação nos eixos X e Y
+      // Translação move a figura de um ponto para outro no plano, sem alterar seu tamanho, forma ou orientação.
+      // Controlado por translateX e translateY.
+      const tx = parseFloat(controls.translateX.value); // tx: quanto mover no eixo X
+      const ty = parseFloat(controls.translateY.value); // ty: quanto mover no eixo Y
+
+      // Cisalhamento nos eixos X e Y
+      // O cisalhamento "inclina" a figura em relação aos eixos X(shx) e Y(shy)
+      /*
+      A matriz de cisalhamento 2D é: 
+       [ 1  shx ] shx aplica cisalhamento horizontal (afeta eixo X com base no valor de Y)
+       [ shy  1 ] shy aplica cisalhamento vertical (afeta eixo Y com base no valor de X)
+      */
+      const shx = parseFloat(controls.shearX.value);
+      const shy = parseFloat(controls.shearY.value);
+/* ------------------------------------------------------------------------------------------------------------------------- */
+      // Matriz de transformação composta
+      // Combinação de rotação, escala e cisalhamento.
+      // a, b, c, d são os coeficientes da matriz 2x2 que afeta a forma da figura (inclinação, tamanho, rotação).
+      /* 
+      A matriz final tem a forma:
+
+      [ a  c  e ]  
+      [ b  d  f ]
+
+      Onde: a, b, c, d: rotação, escala e cisalhamento; e, f: translação
+
+      Dúvida que pode surgir: Como o triângulo tem uma matriz 2x2 se a matriz final é 2x3?
+      A matriz de transformação 2D afim em SVG é representada assim:
+      [ a  c  e ]
+      [ b  d  f ]
+      
+      A parte: 
+      [ a  c ]
+      [ b  d ]
+      é a matriz 2x2 que representa: Rotação, Escala, Cisalhamento 
+      A matriz 2x2 está contida nos elementos [a, b, c, d].
+
+      Já os valores e e f são a translação, ou seja, o deslocamento da figura no espaço.
+
+      Como funciona no fundo:
+      A matriz de transformação completa, na verdade, é uma matriz 3x3 em álgebra linear, mas como SVG trabalha só com 2D e transforma pontos homogêneos, a forma reduzida que usamos é:
+      [ a  c  e ]
+      [ b  d  f ]
+      [ 0  0  1 ]
+      O SVG omite a última linha ([0 0 1]) porque ela é padrão em transformações 2D.
+      Os elementos e e f adicionam translação, por isso a matriz é chamada de 2x3 (ou 3x3 implícita).
+
+      */
+      const a = cos * sx + shy * sin * sy;
+      const b = sin * sx + shy * cos * sy;
+      const c = shx * cos * sx - sin * sy;
+      const d = shx * sin * sx + cos * sy;
+
+      // e, f aplicam deslocamento (translação) no plano.
+      const e = tx; // translação em X
+      const f = ty; // translação em Y
+
+      // Aplica a matriz de transformação composta ao triângulo, fazendo com que ele seja rotacionado, escalado, transladado e/ou cisalhado de acordo com os valores definidos nos controles.
+      const transformStr = `matrix(${a.toFixed(3)}, ${b.toFixed(3)}, ${c.toFixed(3)}, ${d.toFixed(3)}, ${e.toFixed(1)}, ${f.toFixed(1)})`;
+      triangle.setAttribute('transform', transformStr);
+          // Essa transformação acontece implicitamente
+          /* 
+          No SVG, quando escrevemos transform="matrix(a, b, c, d, e, f)", o navegador interpreta essa matriz como uma transformação afim 2D, e aplica internamente para todos os pontos da figura com base na fórmula:
+          x' = a*x + c*y + e  
+          y' = b*x + d*y + f
+          */
+
+      // Exibição no console para fins didáticos (F12)
+      console.clear(); // Limpa o console toda vez que o usuário muda algum valor
+      console.log("Transformação aplicada:"); // Informa que a transformação foi atualizada.
+
+      // Mostra o valor atual de rotação e a matriz de rotação pura, separada das demais transformações.
+      console.log(`Rotação: ${controls.rotate.value}°`); 
+      console.log(`Matriz de rotação 2D:`);
+      console.log(`[ cos(θ) -sin(θ) ]`);
+      console.log(`[ sin(θ)  cos(θ) ]`);
+      console.log(`cos = ${cos.toFixed(3)}, sin = ${sin.toFixed(3)}`);
+
+      // Matriz composta
+      // Mostra a matriz de transformação final usada pelo SVG:
+      // a, b, c, d, e, f representam todos os efeitos juntos: rotação + escala + cisalhamento + translação.
+      console.log("\nMatriz composta SVG (após rotação, escala, cisalhamento):");
+      console.log(`[ ${a.toFixed(3)}  ${c.toFixed(3)}  ${e.toFixed(1)} ]`);
+      console.log(`[ ${b.toFixed(3)}  ${d.toFixed(3)}  ${f.toFixed(1)} ]`);
+
+      // Fórmulas de transformação
+      // Indica como cada ponto (x, y) da figura é transformado para (x', y') usando a matriz composta.
+      console.log("\nFórmulas:");
+      console.log("x' = a*x + c*y + e");
+      console.log("y' = b*x + d*y + f");
+    }
+
+    // Atualiza a figura sempre que qualquer controle é movido
+    // Cada vez que o usuário interage com um controle deslizante, a função updateTransform() é chamada para recalcular a matriz e aplicar a transformação.
+    Object.values(controls).forEach(input => {
+      input.addEventListener('input', updateTransform);
+    });
+
+    // Chamada inicial para renderizar com valores padrão
+    updateTransform();
+  </script>
+</body>
+</html>

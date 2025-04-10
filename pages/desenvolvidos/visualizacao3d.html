@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Visualização 3D Animada</title>
+    <link rel="stylesheet" href="../../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+<h1>Visualização 3D Animada</h1>
+
+<nav>
+    <a href="../../index.html" class="button">Início</a>
+</nav>
+
+<div class="display-area" style="flex-direction: column; align-items: center; gap: 10px;">
+    <div id="canvas3D" style="width: 400px; height: 300px;"></div>
+    <div id="animation-controls" style="display: flex; gap: 10px; justify-content: center;">
+        <button id="playBtn" class="button">Iniciar</button>
+        <button id="pauseBtn" class="button">Pausar</button>
+    </div>
+</div>
+
+<div style="max-width:800px; margin-top:30px; padding:10px; background:white; border:1px solid #ccc; border-radius:10px;">
+    <h2>Manual Explicativo - Transformações 3D</h2>
+    <p><strong>Transformações geométricas</strong> são operações matemáticas aplicadas a objetos para alterar sua
+        posição, orientação ou forma.</p>
+
+    <h3>1. Translação</h3>
+    <p>Move o objeto no espaço sem mudar sua forma. Exemplo:</p>
+    <pre>
+[x'] = x + tx
+[y'] = y + ty
+[z'] = z + tz
+  </pre>
+
+    <h3>2. Rotação</h3>
+    <p>Gira o objeto ao redor de um eixo. No exemplo, usamos o eixo Y:</p>
+    <pre>
+[x'] = cos(θ) * x + sen(θ) * z
+[z'] = -sen(θ) * x + cos(θ) * z
+  </pre>
+
+    <h3>3. Escala</h3>
+    <p>Altera o tamanho do objeto proporcionalmente:</p>
+    <pre>
+[x'] = s * x
+[y'] = s * y
+[z'] = s * z
+  </pre>
+
+    <h3>4. Cisalhamento</h3>
+    <p>Distorce o objeto, inclinando seus lados. Por exemplo:</p>
+    <pre>
+[x'] = x + k * z
+  </pre>
+
+    <h3>Como foi implementado?</h3>
+    <ul>
+        <li>Usamos a biblioteca <strong>Three.js</strong> para desenhar um cubo em 3D no navegador.</li>
+        <li>As transformações são feitas com <code>Matrix4</code>, aplicando rotação, escala, translação e cisalhamento.
+        </li>
+        <li>O cubo gira automaticamente com rotação nos eixos X, Y e Z para melhor visualização.</li>
+    </ul>
+</div>
+
+<script>
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, 400 / 300, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setSize(400, 300);
+    renderer.setClearColor(0xffffff);
+    document.getElementById("canvas3D").appendChild(renderer.domElement);
+
+    const ambientLight = new THREE.AmbientLight(0x404040);
+    scene.add(ambientLight);
+
+    const light = new THREE.PointLight(0xffffff, 1);
+    light.position.set(10, 10, 10);
+    scene.add(light);
+
+    const geometry = new THREE.BoxGeometry();
+    const material = new THREE.MeshPhongMaterial({color: 0x007acc});
+    const cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+
+    camera.position.z = 5;
+
+    let isAnimating = true;
+
+    function animate() {
+        if (isAnimating) {
+            cube.rotation.x += 0.01;
+            cube.rotation.y += 0.01;
+            cube.rotation.z += 0.01;
+        }
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+    }
+
+
+    window.onload = () => {
+        document.getElementById("playBtn").onclick = () => isAnimating = true;
+        document.getElementById("pauseBtn").onclick = () => isAnimating = false;
+    };
+
+    animate();
+</script>
+
+</body>
+</html>

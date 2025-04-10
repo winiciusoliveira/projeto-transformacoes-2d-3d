@@ -1,0 +1,319 @@
+<!-- 🔄 TRANSFORMAÇÕES GEOMÉTRICAS COMPLETAS -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Transformações Geométricas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 40px;
+        }
+
+        button {
+            margin: 10px;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 30px 20px;
+            border: 1px solid #ccc;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            text-align: center;
+        }
+
+        .modal-content label {
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .modal-content input {
+            width: 60px;
+            padding: 4px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        canvas {
+            border: 1px solid #ccc;
+            margin: 10px 0;
+        }
+
+        .code {
+            background: #f0f0f0;
+            padding: 10px;
+            font-family: monospace;
+            text-align: left;
+            white-space: pre-wrap;
+        }
+
+        .input-group {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .input-group label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</head>
+<body>
+
+<h1>Transformações Geométricas em 2D</h1>
+<p>Clique em uma transformação para visualizar o exemplo e entender o conceito:</p>
+
+<button onclick="abrirModal('translacao')">Translação</button>
+<button onclick="abrirModal('rotacao')">Rotação</button>
+<button onclick="abrirModal('escala')">Escala</button>
+<button onclick="abrirModal('cisalhamento')">Cisalhamento</button>
+
+<!-- 🔹 MODAL TRANSLAÇÃO -->
+<div id="translacao" class="modal">
+    <div class="modal-content">
+        <div style="margin: 10px 0;">
+            <button onclick="ajustarZoomIndividual('translacao', 0.1)">➕</button>
+            <button onclick="ajustarZoomIndividual('translacao', -0.1)">➖</button>
+        </div>
+
+        <span class="close" onclick="fecharModal('translacao')">&times;</span>
+        <h2>🔄 Translação</h2>
+        <p>Move o objeto de posição sem alterar forma ou orientação.</p>
+        <p><strong>Fórmulas:</strong><br>x' = x + tx<br>y' = y + ty</p>
+        <canvas id="canvasTranslacao" width="400" height="400"></canvas>
+        <div class="input-group">
+            <label>tx: <input type="number" id="tx" value="50"></label>
+            <label>ty: <input type="number" id="ty" value="30"></label>
+        </div>
+        <button onclick="desenharTranslacao()">Aplicar</button>
+        <div class="code">
+            const novoX = x + tx;
+            const novoY = y + ty;
+        </div>
+    </div>
+</div>
+
+<!-- 🔹 MODAL ROTAÇÃO -->
+<div id="rotacao" class="modal">
+    <div class="modal-content">
+        <div style="margin: 10px 0;">
+            <button onclick="ajustarZoomIndividual('rotacao', 0.1)">➕</button>
+            <button onclick="ajustarZoomIndividual('rotacao', -0.1)">➖</button>
+        </div>
+
+        <span class="close" onclick="fecharModal('rotacao')">&times;</span>
+        <h2>🔁 Rotação</h2>
+        <p>Gira o objeto em torno de um ponto.</p>
+        <p><strong>Fórmulas:</strong><br>x' = x * cos(θ) - y * sin(θ)<br>y' = x * sin(θ) + y * cos(θ)</p>
+        <canvas id="canvasRotacao" width="400" height="400"></canvas>
+        <div class="input-group">
+            <label>Ângulo (graus): <input type="number" id="angulo" value="45"></label>
+        </div>
+        <button onclick="desenharRotacao()">Aplicar</button>
+        <div class="code">
+            const rad = angulo * Math.PI / 180;
+            const x2 = x * Math.cos(rad) - y * Math.sin(rad);
+            const y2 = x * Math.sin(rad) + y * Math.cos(rad);
+        </div>
+    </div>
+</div>
+
+<!-- 🔹 MODAL ESCALA -->
+<div id="escala" class="modal">
+    <div class="modal-content">
+        <div style="margin: 10px 0;">
+            <button onclick="ajustarZoomIndividual('escala', 0.1)">➕</button>
+            <button onclick="ajustarZoomIndividual('escala', -0.1)">➖</button>
+        </div>
+
+        <span class="close" onclick="fecharModal('escala')">&times;</span>
+        <h2>📏 Escala</h2>
+        <p>Aumenta ou diminui o tamanho do objeto.</p>
+        <p><strong>Fórmulas:</strong><br>x' = x * sx<br>y' = y * sy</p>
+        <canvas id="canvasEscala" width="400" height="400"></canvas>
+        <div class="input-group">
+            <label>sx: <input type="number" id="sx" value="1.5" step="0.1"></label>
+            <label>sy: <input type="number" id="sy" value="1.5" step="0.1"></label>
+        </div>
+        <button onclick="desenharEscala()">Aplicar</button>
+        <div class="code">
+            const novoX = x * sx;
+            const novoY = y * sy;
+        </div>
+    </div>
+</div>
+
+<!-- 🔹 MODAL CISALHAMENTO -->
+<div id="cisalhamento" class="modal">
+    <div class="modal-content">
+        <div style="margin: 10px 0;">
+            <button onclick="ajustarZoomIndividual('cisalhamento', 0.1)">➕</button>
+            <button onclick="ajustarZoomIndividual('cisalhamento', -0.1)">➖</button>
+        </div>
+
+        <span class="close" onclick="fecharModal('cisalhamento')">&times;</span>
+        <h2>🪟 Cisalhamento</h2>
+        <p>Inclina o objeto, deformando suas formas.</p>
+        <p><strong>Fórmulas (horizontal):</strong><br>x' = x + shx * y<br>y' = y</p>
+        <canvas id="canvasCisalhamento" width="400" height="400"></canvas>
+
+        <div class="input-group">
+            <label>shx: <input type="number" id="shx" value="0.5" step="0.1"></label>
+        </div>
+
+        <button onclick="desenharCisalhamento()">Aplicar</button>
+        <div class="code">
+            const novoX = x + shx * y;
+            const novoY = y;
+        </div>
+    </div>
+</div>
+
+<script>
+    const zoomMap = {
+        translacao: 1,
+        rotacao: 1,
+        escala: 1,
+        cisalhamento: 1
+    };
+
+    function abrirModal(id) {
+        document.getElementById(id).style.display = "block";
+    }
+
+    function fecharModal(id) {
+        document.getElementById(id).style.display = "none";
+    }
+
+    // ESC fecha qualquer modal aberto
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = "none";
+            });
+        }
+    });
+
+    // Ajuste de zoom do modal
+    let modalZoom = 1;
+
+    function ajustarZoom(fator) {
+        modalZoom += fator;
+        if (modalZoom < 0.5) modalZoom = 0.5;
+        if (modalZoom > 2) modalZoom = 2;
+        document.querySelectorAll('.modal-content').forEach(modal => {
+            modal.style.transform = `scale(${modalZoom})`;
+        });
+    }
+
+    function desenharTranslacao() {
+        const canvas = document.getElementById('canvasTranslacao');
+        const ctx = canvas.getContext('2d');
+        const tx = parseInt(document.getElementById('tx').value);
+        const ty = parseInt(document.getElementById('ty').value);
+        const x = 100, y = 100, lado = 80;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(x, y, lado, lado);
+        ctx.fillStyle = 'green';
+        ctx.fillRect(x + tx, y + ty, lado, lado);
+    }
+
+    function desenharRotacao() {
+        const canvas = document.getElementById('canvasRotacao');
+        const ctx = canvas.getContext('2d');
+        const angulo = parseFloat(document.getElementById('angulo').value);
+        const rad = angulo * Math.PI / 180;
+        const x = 200, y = 200, lado = 60;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(-lado / 2, -lado / 2, lado, lado);
+        ctx.rotate(rad);
+        ctx.fillStyle = 'green';
+        ctx.fillRect(-lado / 2, -lado / 2, lado, lado);
+        ctx.restore();
+    }
+
+    function desenharEscala() {
+        const canvas = document.getElementById('canvasEscala');
+        const ctx = canvas.getContext('2d');
+        const sx = parseFloat(document.getElementById('sx').value);
+        const sy = parseFloat(document.getElementById('sy').value);
+        const x = 100, y = 100, lado = 60;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(x, y, lado, lado);
+        ctx.fillStyle = 'green';
+        ctx.fillRect(x, y, lado * sx, lado * sy);
+    }
+
+    function desenharCisalhamento() {
+        const canvas = document.getElementById('canvasCisalhamento');
+        const ctx = canvas.getContext('2d');
+        const shx = parseFloat(document.getElementById('shx').value);
+        const x = 100, y = 100, lado = 80;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(x, y, lado, lado);
+        ctx.save();
+        ctx.transform(1, 0, shx, 1, 0, 0);
+        ctx.fillStyle = 'green';
+        ctx.fillRect(x, y, lado, lado);
+        ctx.restore();
+    }
+
+
+    function ajustarZoomIndividual(modalId, fator) {
+        const modalContent = document.querySelector(`#${modalId} .modal-content`);
+        zoomMap[modalId] += fator;
+
+        if (zoomMap[modalId] < 0.5) zoomMap[modalId] = 0.5;
+        if (zoomMap[modalId] > 2) zoomMap[modalId] = 2;
+
+        modalContent.style.transform = `scale(${zoomMap[modalId]})`;
+    }
+
+    desenharTranslacao();
+</script>
+</body>
+</html>

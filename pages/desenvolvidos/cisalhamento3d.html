@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Cubo 3D com Cisalhamento</title>
+    <link rel="stylesheet" href="../../style.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"/>
+    <style>
+        .container {
+            width: 300px;
+            height: 300px;
+            min-height: 300px;
+            perspective: 1000px;
+            margin: 40px auto 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .cube-wrapper {
+            transform: rotateX(25deg) rotateY(25deg);
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+        .cube {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+            margin: auto;
+        }
+
+        .face {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            opacity: 0.85;
+            border: 2px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        .front {
+            background: rgba(255, 0, 0, 0.8);
+            transform: translateZ(100px);
+        }
+
+        .back {
+            background: rgba(0, 255, 0, 0.8);
+            transform: rotateY(180deg) translateZ(100px);
+        }
+
+        .right {
+            background: rgba(0, 0, 255, 0.8);
+            transform: rotateY(90deg) translateZ(100px);
+        }
+
+        .left {
+            background: rgba(255, 255, 0, 0.8);
+            transform: rotateY(-90deg) translateZ(100px);
+        }
+
+        .top {
+            background: rgba(255, 0, 255, 0.8);
+            transform: rotateX(90deg) translateZ(100px);
+        }
+
+        .bottom {
+            background: rgba(0, 255, 255, 0.8);
+            transform: rotateX(-90deg) translateZ(100px);
+        }
+
+        .controls {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .controls .button {
+            display: block;
+            margin: 20px auto 0;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            font-weight: 500;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+        }
+
+        small {
+            display: block;
+            color: #666;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        h1 {
+            margin: 40px 0 50px;
+            font-size: 24px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+<h1>Cubo 3D com Matriz de Cisalhamento</h1>
+
+<nav>
+    <a href="../../index.html" class="button">Início</a>
+</nav>
+
+
+<div class="container">
+    <div class="cube-wrapper">
+        <div class="cube" id="cube">
+            <div class="face front">Frente</div>
+            <div class="face back">Trás</div>
+            <div class="face right">Direita</div>
+            <div class="face left">Esquerda</div>
+            <div class="face top">Topo</div>
+            <div class="face bottom">Base</div>
+        </div>
+    </div>
+</div>
+
+<div class="controls">
+    <div class="control-group">
+        <label for="shearX">Cisalhamento Y em X: <span id="shearXValue">0</span></label>
+        <input type="range" id="shearX" min="-1" max="1" step="0.1" value="0"/>
+        <small>Inclina Y com base em X (horizontal)</small>
+    </div>
+
+    <div class="control-group">
+        <label for="shearY">Cisalhamento X em Y: <span id="shearYValue">0</span></label>
+        <input type="range" id="shearY" min="-1" max="1" step="0.1" value="0"/>
+        <small>Inclina X com base em Y (vertical)</small>
+    </div>
+
+    <div class="control-group">
+        <label for="shearZ">Cisalhamento X em Z: <span id="shearZValue">0</span></label>
+        <input type="range" id="shearZ" min="-1" max="1" step="0.1" value="0"/>
+        <small>Inclina X com base na profundidade Z</small>
+    </div>
+
+    <button class="button" id="resetBtn">Resetar Cisalhamento</button>
+</div>
+
+<script>
+    const cube = document.getElementById("cube");
+    const shearXInput = document.getElementById("shearX");
+    const shearYInput = document.getElementById("shearY");
+    const shearZInput = document.getElementById("shearZ");
+    const shearXValue = document.getElementById("shearXValue");
+    const shearYValue = document.getElementById("shearYValue");
+    const shearZValue = document.getElementById("shearZValue");
+    const resetBtn = document.getElementById("resetBtn");
+
+    let shearX = 0, shearY = 0, shearZ = 0;
+
+    function updateCube() {
+        const matrix = [
+            1, shearY, shearZ, 0,
+            shearX, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        ];
+
+        cube.style.transform = `matrix3d(${matrix.join(",")})`;
+
+        shearXValue.textContent = shearX.toFixed(1);
+        shearYValue.textContent = shearY.toFixed(1);
+        shearZValue.textContent = shearZ.toFixed(1);
+    }
+
+    shearXInput.addEventListener("input", function () {
+        shearX = parseFloat(this.value);
+        updateCube();
+    });
+
+    shearYInput.addEventListener("input", function () {
+        shearY = parseFloat(this.value);
+        updateCube();
+    });
+
+    shearZInput.addEventListener("input", function () {
+        shearZ = parseFloat(this.value);
+        updateCube();
+    });
+
+    resetBtn.addEventListener("click", function () {
+        shearX = shearY = shearZ = 0;
+        shearXInput.value = 0;
+        shearYInput.value = 0;
+        shearZInput.value = 0;
+        updateCube();
+    });
+
+    updateCube();
+</script>
+</body>
+</html>

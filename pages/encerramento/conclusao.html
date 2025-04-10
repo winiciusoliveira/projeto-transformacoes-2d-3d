@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Conclusão e Dificuldades</title>
+    <link rel="stylesheet" href="../../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<h1>Conclusão do Projeto</h1>
+
+<nav>
+    <a href="../../index.html" class="button">Início</a>
+</nav>
+
+<div style="max-width: 800px; background: white; padding: 20px; border-radius: 10px; border: 1px solid #ccc;">
+    <h2>Resumo do Projeto</h2>
+    <p>Este projeto teve como objetivo aplicar transformações geométricas 2D e 3D interativamente utilizando HTML,
+        JavaScript, Canvas, SVG e a biblioteca Three.js.</p>
+
+    <p>As transformações implementadas foram:</p>
+    <ul>
+        <li><strong>Translação</strong>: desloca a forma no espaço.</li>
+        <li><strong>Rotação</strong>: gira o objeto em torno de um eixo.</li>
+        <li><strong>Escala</strong>: aumenta ou diminui o tamanho da forma.</li>
+        <li><strong>Cisalhamento</strong>: distorce a forma inclinando seus lados.</li>
+    </ul>
+
+    <h2>Dificuldades Encontradas</h2>
+    <ul>
+        <li>Entender o conceito de cisalhamento, principalmente em 3D, foi um desafio, pois envolve manipulação de
+            matrizes que alteram apenas parte do objeto.
+        </li>
+        <li>Implementar a matriz de transformação completa no Three.js exigiu estudo adicional, principalmente para que
+            as transformações fossem aplicadas corretamente na ordem certa.
+        </li>
+        <li>Fazer com que a iluminação funcionasse corretamente após o cisalhamento (ajustando <code>computeVertexNormals()</code>)
+            foi essencial para manter a aparência do cubo realista.
+        </li>
+    </ul>
+
+    <h2>Aprendizados</h2>
+    <ul>
+        <li>Compreensão prática de como funcionam transformações lineares em gráficos computacionais.</li>
+        <li>Aprendi a trabalhar com SVG e Canvas para 2D, e com Three.js para gráficos em 3D.</li>
+        <li>Desenvolvi a habilidade de organizar código e apresentar os resultados de forma interativa e didática.</li>
+    </ul>
+
+    <h2>Conclusão</h2>
+    <p>O projeto foi desafiador e muito enriquecedor. Agora consigo visualizar como as fórmulas aprendidas em aula são
+        aplicadas na prática e como elas controlam visualmente os objetos. O uso de programação e matemática juntos foi
+        uma experiência completa de aprendizado.</p>
+</div>
+</body>
+</html>
