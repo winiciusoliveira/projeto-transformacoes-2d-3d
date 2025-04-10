@@ -20,8 +20,14 @@
     <div id="ui-panel">
         <label>Translação X: <input type="range" id="tx" min="-5" max="5" step="0.1" value="0"></label>
         <label>Translação Y: <input type="range" id="ty" min="-5" max="5" step="0.1" value="0"></label>
-        <label>Rotação Y (°): <input type="range" id="rot" min="0" max="360" step="1" value="0"></label>
-        <label>Escala: <input type="range" id="scale" min="0.1" max="3" step="0.1" value="1"></label>
+        <div class="control-group">
+            <label for="rot">Rotação (°):</label>
+            <input type="range" id="rot" min="0" max="360" step="1" value="0"/>
+        </div>
+        <div class="control-group">
+            <label for="scale">Escala:</label>
+            <input type="range" id="scale" min="0.1" max="3" step="0.1" value="1"/>
+        </div>
         <label>Cisalhamento XZ: <input type="range" id="shearXZ" min="-1" max="1" step="0.1" value="0"></label>
         <label>Cisalhamento YZ: <input type="range" id="shearYZ" min="-1" max="1" step="0.1" value="0"></label>
         <label>Cisalhamento ZX: <input type="range" id="shearZX" min="-1" max="1" step="0.1" value="0"></label>
@@ -35,7 +41,10 @@
 <div style="max-width:800px; margin-top:30px; padding:10px; background:white; border:1px solid #ccc; border-radius:10px;">
     <h3>🧠 Entendendo as Transformações 3D</h3>
 
-    <p>O cubo que você vê na tela é um objeto 3D renderizado usando a biblioteca <strong>Three.js</strong>. Através de comandos JavaScript, conseguimos aplicar transformações geométricas como <strong>translação</strong>, <strong>rotação</strong>, <strong>escala</strong> e <strong>cisalhamento</strong> diretamente sobre ele, modificando sua matriz de transformação.</p>
+    <p>O cubo que você vê na tela é um objeto 3D renderizado usando a biblioteca <strong>Three.js</strong>. Através de
+        comandos JavaScript, conseguimos aplicar transformações geométricas como <strong>translação</strong>, <strong>rotação</strong>,
+        <strong>escala</strong> e <strong>cisalhamento</strong> diretamente sobre ele, modificando sua matriz de
+        transformação.</p>
 
     <h4>🔄 Translação</h4>
     <p>
@@ -43,7 +52,8 @@
     </p>
     <pre><code>cube.applyMatrix4(new THREE.Matrix4().makeTranslation(tx, ty, 0));</code></pre>
     <p>
-        Isso desloca o cubo no eixo X e Y com base nos valores dos controles deslizantes <code>tx</code> e <code>ty</code>. É como empurrar um objeto pela mesa.
+        Isso desloca o cubo no eixo X e Y com base nos valores dos controles deslizantes <code>tx</code> e
+        <code>ty</code>. É como empurrar um objeto pela mesa.
     </p>
 
     <h4>⟳ Rotação</h4>
@@ -66,7 +76,8 @@
 
     <h4>📐 Cisalhamento</h4>
     <p>
-        O cisalhamento deforma o cubo, inclinando seus vértices sem alterar seu volume original. Aqui usamos uma <strong>matriz customizada</strong> para cisalhamento entre os eixos:
+        O cisalhamento deforma o cubo, inclinando seus vértices sem alterar seu volume original. Aqui usamos uma
+        <strong>matriz customizada</strong> para cisalhamento entre os eixos:
     </p>
     <pre><code>
 const shearMatrix = new THREE.Matrix4().set(
@@ -78,12 +89,14 @@ const shearMatrix = new THREE.Matrix4().set(
 cube.applyMatrix4(shearMatrix);
     </code></pre>
     <p>
-        Com isso, o cubo é inclinado nos planos XZ, YZ e ZX. É como empurrar um canto do cubo para deformá-lo sem deslocar o centro.
+        Com isso, o cubo é inclinado nos planos XZ, YZ e ZX. É como empurrar um canto do cubo para deformá-lo sem
+        deslocar o centro.
     </p>
 
     <h4>💡 Dica Técnica</h4>
     <p>
-        Quando o cubo sofre cisalhamento, a iluminação pode parecer "quebrada". Isso acontece porque as <strong>normais</strong> (que dizem à luz como refletir nos objetos) ficam desatualizadas. Por isso usamos:
+        Quando o cubo sofre cisalhamento, a iluminação pode parecer "quebrada". Isso acontece porque as
+        <strong>normais</strong> (que dizem à luz como refletir nos objetos) ficam desatualizadas. Por isso usamos:
     </p>
     <pre><code>cube.geometry.computeVertexNormals();</code></pre>
     <p>
@@ -92,7 +105,9 @@ cube.applyMatrix4(shearMatrix);
 
     <h4>✅ Conclusão</h4>
     <p>
-        O mais interessante é que todas essas transformações estão sendo aplicadas diretamente na matriz do cubo. Isso simula como gráficos 3D funcionam em jogos, simulações e engines profissionais. Aqui, você está literalmente controlando a matriz de transformação de um objeto 3D!
+        O mais interessante é que todas essas transformações estão sendo aplicadas diretamente na matriz do cubo. Isso
+        simula como gráficos 3D funcionam em jogos, simulações e engines profissionais. Aqui, você está literalmente
+        controlando a matriz de transformação de um objeto 3D!
     </p>
 </div>
 

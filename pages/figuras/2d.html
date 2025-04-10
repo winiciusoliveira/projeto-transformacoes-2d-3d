@@ -19,8 +19,14 @@
     <div id="ui-panel">
         <label>Translação X: <input type="range" id="tx" min="-5" max="5" step="0.1" value="0"></label>
         <label>Translação Y: <input type="range" id="ty" min="-5" max="5" step="0.1" value="0"></label>
-        <label>Rotação (°): <input type="range" id="rot" min="0" max="360" step="1" value="0"></label>
-        <label>Escala: <input type="range" id="scale" min="0.1" max="3" step="0.1" value="1"></label>
+        <div class="control-group">
+            <label for="rot">Rotação (°):</label>
+            <input type="range" id="rot" min="0" max="360" step="1" value="0"/>
+        </div>
+        <div class="control-group">
+            <label for="scale">Escala:</label>
+            <input type="range" id="scale" min="0.1" max="3" step="0.1" value="1"/>
+        </div>
         <label>Cisalhamento X: <input type="range" id="shearX" min="-1" max="1" step="0.1" value="0"></label>
     </div>
     <div class="display-area">
@@ -32,16 +38,20 @@
 <div style="max-width:800px; margin-top:30px; padding:10px; background:white; border:1px solid #ccc; border-radius:10px;">
     <h3>Entendendo as Transformações 2D</h3>
 
-    <p>Este visualizador interativo mostra como um quadrado pode ser transformado no plano cartesiano usando fórmulas matemáticas. Todas as transformações são aplicadas dinamicamente ao objeto usando JavaScript e são exibidas em um elemento <code>&lt;canvas&gt;</code>.</p>
+    <p>Este visualizador interativo mostra como um quadrado pode ser transformado no plano cartesiano usando fórmulas
+        matemáticas. Todas as transformações são aplicadas dinamicamente ao objeto usando JavaScript e são exibidas em
+        um elemento <code>&lt;canvas&gt;</code>.</p>
 
     <h4>🔄 Translação</h4>
     <p>
-        A translação desloca o quadrado no eixo X e Y sem alterar seu tamanho ou rotação. No código, os valores dos sliders <code>tx</code> e <code>ty</code> são somados às coordenadas originais:
+        A translação desloca o quadrado no eixo X e Y sem alterar seu tamanho ou rotação. No código, os valores dos
+        sliders <code>tx</code> e <code>ty</code> são somados às coordenadas originais:
     </p>
     <pre><code>x' = x + tx
 y' = y + ty</code></pre>
     <p>
-        Cada ponto do quadrado recebe esse deslocamento. Visualmente, o quadrado "anda" pela tela como se fosse empurrado.
+        Cada ponto do quadrado recebe esse deslocamento. Visualmente, o quadrado "anda" pela tela como se fosse
+        empurrado.
     </p>
 
     <h4>⟳ Rotação</h4>
@@ -51,7 +61,8 @@ y' = y + ty</code></pre>
     <pre><code>x' = x * cos(θ) - y * sin(θ)
 y' = x * sin(θ) + y * cos(θ)</code></pre>
     <p>
-        O ângulo θ vem do slider "Rotação" e é convertido de graus para radianos no JavaScript. Essa rotação usa <code>ctx.rotate()</code> no <code>&lt;canvas&gt;</code>.
+        O ângulo θ vem do slider "Rotação" e é convertido de graus para radianos no JavaScript. Essa rotação usa <code>ctx.rotate()</code>
+        no <code>&lt;canvas&gt;</code>.
     </p>
 
     <h4>🔍 Escala</h4>
@@ -61,12 +72,14 @@ y' = x * sin(θ) + y * cos(θ)</code></pre>
     <pre><code>x' = x * sx
 y' = y * sy</code></pre>
     <p>
-        O código ajusta o tamanho dos lados multiplicando pela escala horizontal (<code>sx</code>) e vertical (<code>sy</code>).
+        O código ajusta o tamanho dos lados multiplicando pela escala horizontal (<code>sx</code>) e vertical
+        (<code>sy</code>).
     </p>
 
     <h4>📐 Cisalhamento</h4>
     <p>
-        O cisalhamento (shear) inclina o quadrado como se ele estivesse sendo puxado diagonalmente. Ele modifica a posição X usando o valor de Y:
+        O cisalhamento (shear) inclina o quadrado como se ele estivesse sendo puxado diagonalmente. Ele modifica a
+        posição X usando o valor de Y:
     </p>
     <pre><code>x' = x + shx * y
 y' = y</code></pre>
@@ -76,7 +89,9 @@ y' = y</code></pre>
 
     <h4>🧠 Conclusão Visual</h4>
     <p>
-        A cada alteração nos sliders, o código recalcula as coordenadas dos pontos do quadrado e redesenha no canvas. Essa manipulação visual permite que as fórmulas matemáticas ganhem vida, facilitando o aprendizado de transformações geométricas.
+        A cada alteração nos sliders, o código recalcula as coordenadas dos pontos do quadrado e redesenha no canvas.
+        Essa manipulação visual permite que as fórmulas matemáticas ganhem vida, facilitando o aprendizado de
+        transformações geométricas.
     </p>
 </div>
 

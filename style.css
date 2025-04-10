@@ -57,17 +57,17 @@ button.button {
 }
 
 /* === CONTROLES === */
+#ui-panel .control-group {
+    margin-bottom: 15px;
+}
+
 #ui-panel label {
     display: block;
-    margin-bottom: 15px;
-    font-size: 14px;
-    line-height: 1.4;
+    margin-bottom: 5px;
 }
 
 #ui-panel input[type="range"] {
-    display: block;
     width: 100%;
-    margin-top: 5px;
 }
 
 /* === ÁREA DE DESENHO === */
